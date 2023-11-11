@@ -26,6 +26,8 @@ function Player:init(x, y)
   self.is_attacking= false
 
   self:setCollideRect(10, 0, 20, 42)
+  self:setGroups({ 1 })
+  self:setCollidesWithGroups({ 2 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self:initScythe()

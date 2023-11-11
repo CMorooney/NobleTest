@@ -16,6 +16,8 @@ function Scythe:init(x, y)
   self:moveTo(x, y)
 
   self:setCollideRect(0, 0, 75, 75)
+  self:setGroups({ 1 })
+  self:setCollidesWithGroups({ 2 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false

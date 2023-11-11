@@ -25,6 +25,8 @@ function Victim:init(x, y, target_x)
   self:moveTo(x, y)
 
   self:setCollideRect(7, 17, 17, 48)
+  self:setGroups({ 2 })
+  self:setCollidesWithGroups({ 1 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false
