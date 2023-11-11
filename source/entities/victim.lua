@@ -24,6 +24,8 @@ function Victim:init(x, y, target_x)
   self.x_velocity = 0
   self:moveTo(x, y)
 
+  self:setCollideRect(7, 17, 17, 48)
+
   self.facing_right = false
 end
 

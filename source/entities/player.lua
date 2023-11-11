@@ -25,6 +25,8 @@ function Player:init(x, y)
   self.facing_right = false
   self.is_attacking= false
 
+  self:setCollideRect(10, 0, 20, 42)
+
   self:initScythe()
 end
 

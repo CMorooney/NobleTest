@@ -14,6 +14,9 @@ function Scythe:init(x, y)
   self:addState("attack", 1, 9, { tickStep = 1, loop = false, onAnimationEndEvent = function() self:remove() end })
 
   self:moveTo(x, y)
+
+  self:setCollideRect(0, 0, 75, 75)
+
   self.facing_right = false
   self.is_attacking = false
 end
