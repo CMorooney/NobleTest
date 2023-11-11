@@ -16,6 +16,7 @@ function Scythe:init(x, y)
   self:moveTo(x, y)
 
   self:setCollideRect(0, 0, 75, 75)
+  self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false
   self.is_attacking = false
@@ -28,6 +29,11 @@ function Scythe:update()
     self:setImageFlip(gfx.kImageUnflipped)
   else
     self:setImageFlip(gfx.kImageFlippedX)
+  end
+
+  local _, _, _, numberOfCollisions = self:checkCollisions(self.x, self.y)
+  if numberOfCollisions > 0 then
+    print("collide")
   end
 end
 

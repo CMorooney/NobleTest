@@ -26,6 +26,7 @@ function Player:init(x, y)
   self.is_attacking= false
 
   self:setCollideRect(10, 0, 20, 42)
+  self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self:initScythe()
 end
@@ -42,7 +43,7 @@ function Player:attack()
 
   self.is_attacking = true
   scythe:attack()
-  pd.timer.new(1000, function()
+  pd.timer.new(800, function()
     self.is_attacking = false
   end)
 end
@@ -69,7 +70,7 @@ function Player:update()
     self:setImageFlip(gfx.kImageFlippedX)
   end
 
-  self:moveBy(self.x_velocity, 0)
+  self:moveWithCollisions(self.x + self.x_velocity, self.y)
   self:updateScythe()
 end
 

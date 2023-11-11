@@ -40,7 +40,6 @@ function Ghost:update()
     self:changeState("idle_front")
   end
 
-  self:moveTo(x, self.y)
+  self:moveWithCollisions(x, self.y)
 end
-
 

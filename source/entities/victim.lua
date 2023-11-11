@@ -15,16 +15,17 @@ function Victim:init(x, y, target_x)
 
   self:addState("idle", 1, 1, { tickStep = 4 }, true)
   self:addState("walk", 2, 7, { tickStep = 4 })
-  self:addState("slam", 8, 11, { tickStep = 4 })
-  self:addState("backhand", 12, 14, { tickStep = 4 })
-  self:addState("punch", 15, 16, { tickStep = 4 })
-  -- todo: die
+  self:addState("slam", 8, 11, { tickStep = 4, loop = false })
+  self:addState("backhand", 12, 14, { tickStep = 4, loop = false })
+  self:addState("punch", 15, 16, { tickStep = 4, loop = false })
+  self:addState("die", 17, 20, { tickStep = 3, loop = false})
 
   self.movement_speed = 1
   self.x_velocity = 0
   self:moveTo(x, y)
 
   self:setCollideRect(7, 17, 17, 48)
+  self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false
 end
@@ -60,5 +61,5 @@ function Victim:update()
     self:setImageFlip(gfx.kImageFlippedX)
   end
 
-  self:moveTo(x, self.y)
+  self:moveWithCollisions(x, self.y)
 end
