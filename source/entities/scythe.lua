@@ -11,7 +11,17 @@ function Scythe:init(x, y)
 
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
 
-  self:addState("attack", 1, 9, { tickStep = 1, loop = false, onAnimationEndEvent = function() self:remove() end })
+  self:addState("attack",
+                1,
+                9,
+                {
+                  tickStep = 1,
+                  loop = false,
+                  onAnimationEndEvent = function()
+                    self:remove()
+                  end
+                }
+  )
 
   self:moveTo(x, y)
 
@@ -33,9 +43,11 @@ function Scythe:update()
     self:setImageFlip(gfx.kImageFlippedX)
   end
 
-  local _, _, _, numberOfCollisions = self:checkCollisions(self.x, self.y)
+  local _, _, collisions, numberOfCollisions = self:checkCollisions(self.x, self.y)
   if numberOfCollisions > 0 then
-    print("collide")
+    local p = collisions[1]
+    local other = p.other
+    other:die()
   end
 end
 

@@ -18,7 +18,17 @@ function Victim:init(x, y, target_x)
   self:addState("slam", 8, 11, { tickStep = 4, loop = false })
   self:addState("backhand", 12, 14, { tickStep = 4, loop = false })
   self:addState("punch", 15, 16, { tickStep = 4, loop = false })
-  self:addState("die", 17, 20, { tickStep = 3, loop = false})
+  self:addState("die",
+                17,
+                20,
+                {
+                  tickStep = 5,
+                  loop = false,
+                  onAnimationEndEvent = function()
+                    self:setImage(victim_imagetable:getImage(20))
+                  end
+                }
+  )
 
   self.movement_speed = 1
   self.x_velocity = 0
@@ -30,14 +40,29 @@ function Victim:init(x, y, target_x)
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false
+  self.is_dead = false
 end
 
 function Victim:setTarget(x)
   self.target_x = x
 end
 
+function Victim:die()
+  if self.is_dead then
+    return
+  end
+
+  print("i'm a victim and i'm dead")
+  self.is_dead = true
+  self:changeState("die")
+end
+
 function Victim:update()
   Victim.super.update(self)
+
+  if self.is_dead then
+    return
+  end
 
   if math.abs(self.target_x - self.x) < 20 then
     -- todo: attack
