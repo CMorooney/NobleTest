@@ -6,22 +6,43 @@ Player = {}
 class("Player").extends(AnimatedSprite)
 
 local player_imagetable <const> = gfx.imagetable.new("assets/images/player")
-local facing_right = false
+
+local scythe
 
 function Player:init(x, y)
   Player.super.init(self, player_imagetable)
 
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
 
-  self:addState("idle_left", 1, 9, { tickStep = 4, flip = playdate.geometry.kFlippedX }, true)
-  self:addState("idle_right", 1, 9, { tickStep = 4 })
+  self:addState("idle", 1, 9, { tickStep = 4 }, true)
   self:addState("accel", 10, 12, { tickStep = 4 })
-  self:addState("run_left", 12, 13, { tickStep = 4, flip = playdate.geometry.kFlippedX })
-  self:addState("run_right", 12, 13, { tickStep = 4 })
+  self:addState("run", 12, 13, { tickStep = 4 })
 
   self.movement_speed = 2
   self.x_velocity = 0
   self:moveTo(x, y)
+
+  self.facing_right = false
+  self.is_attacking= false
+
+  self:initScythe()
+end
+
+function Player:initScythe()
+  scythe = Scythe(200, 180)
+  scythe:setZIndex(2)
+end
+
+function Player:attack()
+  if self.is_attacking then
+    return
+  end
+
+  self.is_attacking = true
+  scythe:attack()
+  pd.timer.new(1000, function()
+    self.is_attacking = false
+  end)
 end
 
 function Player:update()
@@ -29,21 +50,36 @@ function Player:update()
 
   if pd.buttonIsPressed(pd.kButtonLeft) then
     self.x_velocity = -1 * self.movement_speed
-    facing_right = false
-    self:changeState("run_left")
+    self.facing_right = false
+    self:changeState("run")
   elseif pd.buttonIsPressed(pd.kButtonRight) then
     self.x_velocity = 1 * self.movement_speed
-    facing_right = true
-    self:changeState("run_right")
+    self.facing_right = true
+    self:changeState("run")
   else
     self.x_velocity = 0
-    if facing_right then
-      self:changeState("idle_right")
-    else
-      self:changeState("idle_left")
-    end
+    self:changeState("idle")
+  end
+
+  if self.facing_right then
+    self:setImageFlip(gfx.kImageUnflipped)
+  else
+    self:setImageFlip(gfx.kImageFlippedX)
   end
 
   self:moveBy(self.x_velocity, 0)
+  self:updateScythe()
+end
+
+function Player:updateScythe()
+  local xmod = 0
+  if self.facing_right  then
+    xmod = 10
+  else
+    xmod = -10
+  end
+
+  scythe:moveTo(self.x + xmod, scythe.y)
+  scythe.facing_right = self.facing_right
 end
 

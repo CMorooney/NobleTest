@@ -3,6 +3,9 @@ import 'libraries/AnimatedSprite'
 import 'utilities/Utilities'
 import 'scenes/Jam'
 import 'entities/Player'
+import 'entities/Victim'
+import 'entities/Ghost'
+import 'entities/Scythe'
 
 -- Noble.Settings.setup({
 	-- Difficulty = "Medium"
