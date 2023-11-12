@@ -19,7 +19,7 @@ end
 
 function JamScene:enter()
   self:addSprite(player)
-  self:addSprite(victim)
+  player:initScythe()
 end
 
 function JamScene:update()

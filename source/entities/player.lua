@@ -29,13 +29,12 @@ function Player:init(x, y)
   self:setGroups({ 1 })
   self:setCollidesWithGroups({ 2 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
-
-  self:initScythe()
 end
 
 function Player:initScythe()
   scythe = Scythe(200, 180)
   scythe:setZIndex(2)
+  scythe:add()
 end
 
 function Player:attack()

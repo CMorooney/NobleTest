@@ -18,7 +18,8 @@ function Scythe:init(x, y)
                   tickStep = 1,
                   loop = false,
                   onAnimationEndEvent = function()
-                    self:remove()
+                    self.is_attacking = false
+                    self:setVisible(false)
                   end
                 }
   )
@@ -43,18 +44,25 @@ function Scythe:update()
     self:setImageFlip(gfx.kImageFlippedX)
   end
 
-  local _, _, collisions, numberOfCollisions = self:checkCollisions(self.x, self.y)
-  if numberOfCollisions > 0 then
-    local p = collisions[1]
-    local other = p.other
-    if self.facing_right ~= other.facing_right and self:alphaCollision(other) then
-      other:die()
+  if self.is_attacking then
+    local _, _, collisions, numberOfCollisions = self:checkCollisions(self.x, self.y)
+    if numberOfCollisions > 0 then
+      local p = collisions[1]
+      local other = p.other
+      if self.facing_right ~= other.facing_right and self:alphaCollision(other) then
+        other:die()
+      end
     end
   end
 end
 
 function Scythe:attack()
-  self:add()
+  if self.is_attacking then
+    return
+  end
+
+  self.is_attacking = true
+  self:setVisible(true)
   self:playAnimation()
 end
 
