@@ -7,8 +7,11 @@ class("Victim").extends(AnimatedSprite)
 local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
 local ghost_imagetable <const> = gfx.imagetable.new("assets/images/ghost")
 
-function Victim:init(x, y, target_x)
+function Victim:init(x, y, target_x, homeCallback, punchedCallback)
   Victim.super.init(self, victim_imagetable)
+
+  self.homeCallback = homeCallback
+  self.punchedCallback = punchedCallback
 
   self:setTag(TAGS.Victim)
 
@@ -21,7 +24,7 @@ function Victim:init(x, y, target_x)
 
   self:moveTo(x, y)
 
-  self:setCollideRect(7, 17, 17, 48)
+  self:setCollideRect(5, 17, 20, 48)
   self:setGroups({ 2 })
   self:setCollidesWithGroups({ 1 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
@@ -33,6 +36,11 @@ end
 
 function Victim:initHumanAnimations()
   local function attackComplete()
+    local _, _, _, numberOfCollisions = self:checkCollisions(self.x, self.y)
+    if numberOfCollisions > 0 then
+     self.punchedCallback()
+    end
+
     self:setImage(victim_imagetable:getImage(1))
   end
 
@@ -73,7 +81,7 @@ function Victim:initHumanAnimations()
                   onAnimationEndEvent = function()
                     self:setImage(victim_imagetable:getImage(20))
                     self:setCollisionsEnabled(false)
-                    pd.timer.new(300, function()
+                    pd.timer.new(800, function()
                       self.imagetable = ghost_imagetable
                       self:changeState("ghost_idle_front")
                       self:setTag(TAGS.Ghost)
@@ -122,6 +130,7 @@ function Victim:attack()
   end
 
   self.is_attacking = true
+
   pd.timer.new(800, function()
     self.is_attacking = false
   end)
@@ -147,6 +156,15 @@ function Victim:IdleAnim(tag)
   end
 end
 
+function Victim:atHome()
+  local xDiff = math.abs(200 - self.x)
+  local yDiff = math.abs(0 - self.y)
+  if yDiff < 35 and xDiff < 40 then
+    return true
+  end
+  return false
+end
+
 function Victim:update()
   Victim.super.update(self)
 
@@ -155,15 +173,19 @@ function Victim:update()
   local tag = self:getTag()
   if tag == TAGS.Body then
     return
+  elseif tag == TAGS.Ghost and self:atHome() then
+    self:remove()
+    self.homeCallback()
   end
 
   local x = math.lerp(self.x, self.target_x, 0.01)
   local y = self.y
 
   if tag == TAGS.Ghost then
-    y = math.lerp(self.y, 0, 0.001);
+    y = math.lerp(self.y, 0, 0.01);
   elseif math.abs(self.target_x - self.x) < 20 then
     self:attack()
+    return
   end
 
 

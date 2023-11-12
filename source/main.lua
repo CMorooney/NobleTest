@@ -5,6 +5,8 @@ import 'scenes/Jam'
 import 'entities/Player'
 import 'entities/Victim'
 import 'entities/Scythe'
+import 'entities/Home'
+import 'entities/healthbar'
 
 -- Noble.Settings.setup({
 	-- Difficulty = "Medium"
