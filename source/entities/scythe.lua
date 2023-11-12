@@ -47,7 +47,9 @@ function Scythe:update()
   if numberOfCollisions > 0 then
     local p = collisions[1]
     local other = p.other
-    other:die()
+    if self:alphaCollision(other) then
+      other:die()
+    end
   end
 end
 

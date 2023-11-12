@@ -26,6 +26,7 @@ function Victim:init(x, y, target_x)
                   loop = false,
                   onAnimationEndEvent = function()
                     self:setImage(victim_imagetable:getImage(20))
+                    self:setCollisionsEnabled(false)
                   end
                 }
   )
