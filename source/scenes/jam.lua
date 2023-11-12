@@ -39,6 +39,8 @@ local totalVictimsEscaped = 0
 
 local victimSpawnTimer = nil
 
+local spawnLeft = false
+
 function JamScene:init()
   JamScene.super.init(self)
   self.background = gfx.image.new("assets/images/background")
@@ -112,22 +114,26 @@ function JamScene:enter()
   victimSpawnTimer.timerEndedCallback = function(_)
     if waveVictimsSpawned >= currentWave then return end
 
-    local xpos = -20
-    local left = math.random(2)
-    if left > 1 then xpos = 420 end
+    local multipler = math.floor(currentWave / 5) + 1
 
-    local victim = Victim(xpos,
-                          175,
-                          player.x,
-                          victim_imagetable,
-                          ghost_imagetable,
-                          ghostsplode_imagetable,
-                          ghostReachedHome,
-                          playerWasPunched,
-                          ghostDied)
-    victim:setZIndex(1)
-    self:addSprite(victim)
-    waveVictimsSpawned = waveVictimsSpawned + 1
+    for _ = 1, multipler do
+      local xpos = -20
+      if spawnLeft == false then xpos = 420 end
+
+      local victim = Victim(xpos,
+                            175,
+                            player.x,
+                            victim_imagetable,
+                            ghost_imagetable,
+                            ghostsplode_imagetable,
+                            ghostReachedHome,
+                            playerWasPunched,
+                            ghostDied)
+      victim:setZIndex(1)
+      self:addSprite(victim)
+      waveVictimsSpawned = waveVictimsSpawned + 1
+      spawnLeft = not spawnLeft
+    end
   end
 end
 
