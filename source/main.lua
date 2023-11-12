@@ -2,6 +2,8 @@ import 'libraries/noble/Noble'
 import 'libraries/AnimatedSprite'
 import 'utilities/Utilities'
 import 'scenes/Jam'
+import 'scenes/gameover'
+import 'scenes/start'
 import 'entities/Player'
 import 'entities/Victim'
 import 'entities/Scythe'
@@ -28,7 +30,7 @@ TAGS = {
   Ghost = 8
 }
 
-Noble.new(JamScene,
+Noble.new(StartScene,
           2,                           -- pause (in seconds) to wait after launch sequence
           Noble.Transition.DipToBlack, -- transition type
           {},                          -- transition properties. find docs of transition used in previous arg for available options

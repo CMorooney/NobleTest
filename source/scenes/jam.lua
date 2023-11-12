@@ -106,7 +106,7 @@ function JamScene:enter()
     self:handleGhostKill()
   end
 
-  victimSpawnTimer = pdtimer.new(1000)
+  victimSpawnTimer = pdtimer.new(800)
   victimSpawnTimer.repeats = true
   victimSpawnTimer.delay = 2000
   victimSpawnTimer.timerEndedCallback = function(_)
@@ -181,7 +181,19 @@ function JamScene:handleGhostKill()
 end
 
 function JamScene:gameOver()
-  print("game over")
+  victimSpawnTimer:pause()
+  for _, sprite in ipairs(gfx.sprite.getAllSprites()) do
+    local t = sprite:getTag()
+    if t == TAGS.Player or
+       t == TAGS.Scythe or
+       t == TAGS.Soundwave or
+       t == TAGS.Victim or
+       t == TAGS.Ghost then
+      sprite:remove()
+    end
+  end
+
+  Noble.transition(GameOverScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
 end
 
 function JamScene:update()
