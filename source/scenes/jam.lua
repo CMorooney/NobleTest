@@ -40,6 +40,7 @@ local totalVictimsEscaped = 0
 local victimSpawnTimer = nil
 
 local spawnLeft = false
+local gameOver = false
 
 function JamScene:init()
   JamScene.super.init(self)
@@ -112,13 +113,15 @@ function JamScene:enter()
   victimSpawnTimer.repeats = true
   victimSpawnTimer.delay = 2000
   victimSpawnTimer.timerEndedCallback = function(_)
-    if waveVictimsSpawned >= currentWave then return end
-
     local multipler = math.floor(currentWave / 5) + 1
 
     for _ = 1, multipler do
+      if waveVictimsSpawned >= currentWave then return end
+
       local xpos = -20
       if spawnLeft == false then xpos = 420 end
+
+      if gameOver then return end
 
       local victim = Victim(xpos,
                             175,
@@ -187,7 +190,9 @@ function JamScene:handleGhostKill()
 end
 
 function JamScene:gameOver()
+  gameOver = true
   victimSpawnTimer:pause()
+  victimSpawnTimer:remove()
   for _, sprite in ipairs(gfx.sprite.getAllSprites()) do
     local t = sprite:getTag()
     if t == TAGS.Player or
