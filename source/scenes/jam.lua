@@ -33,7 +33,7 @@ end
 
 function JamScene:update()
   for _, sprite in ipairs(gfx.sprite.getAllSprites()) do
-    if sprite:getTag() == 6 then
+    if sprite:getTag() == TAGS.Victim then
       sprite:setTarget(player.x)
     end
   end

@@ -4,7 +4,6 @@ import 'utilities/Utilities'
 import 'scenes/Jam'
 import 'entities/Player'
 import 'entities/Victim'
-import 'entities/Ghost'
 import 'entities/Scythe'
 
 -- Noble.Settings.setup({
@@ -16,6 +15,12 @@ import 'entities/Scythe'
 -- })
 
 Noble.showFPS = true
+
+TAGS = {
+  Victim = 6,
+  Body = 7,
+  Ghost = 8
+}
 
 Noble.new(JamScene,
           2,                           -- pause (in seconds) to wait after launch sequence
