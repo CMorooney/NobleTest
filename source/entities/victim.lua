@@ -177,8 +177,8 @@ end
 
 function Victim:atHome()
   local xDiff = math.abs(200 - self.x)
-  local yDiff = math.abs(0 - self.y)
-  if yDiff < 35 and xDiff < 40 then
+  local yDiff = math.abs(-50 - self.y)
+  if yDiff < 25 and xDiff < 40 then
     return true
   end
   return false
@@ -201,7 +201,7 @@ function Victim:update()
   local y = self.y
 
   if tag == TAGS.Ghost then
-    y = math.lerp(self.y, 0, 0.01);
+    y = math.lerp(self.y, -50, 0.01);
   elseif math.abs(self.target_x - self.x) < 20 then
     self:attack()
     return
