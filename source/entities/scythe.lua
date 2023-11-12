@@ -9,6 +9,8 @@ local scythe_imagetable <const> = gfx.imagetable.new("assets/images/scythe")
 function Scythe:init(x, y)
   Scythe.super.init(self, scythe_imagetable)
 
+  self:setTag(TAGS.Scythe)
+
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
 
   self:addState("attack",
@@ -27,8 +29,8 @@ function Scythe:init(x, y)
   self:moveTo(x, y)
 
   self:setCollideRect(0, 0, 75, 75)
-  self:setGroups({ 3 })
-  self:setCollidesWithGroups({ 2 })
+  self:setGroups({ TAGS.Scythe })
+  self:setCollidesWithGroups({ TAGS.Victim })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.facing_right = false
@@ -49,7 +51,10 @@ function Scythe:update()
     if numberOfCollisions > 0 then
       local p = collisions[1]
       local other = p.other
-      if self.facing_right ~= other.facing_right and self:alphaCollision(other) then
+      local tag = other:getTag()
+      if tag == TAGS.Victim and
+         self.facing_right ~= other.facing_right and
+         self:alphaCollision(other) then
         other:die()
       end
     end

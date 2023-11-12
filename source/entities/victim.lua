@@ -25,8 +25,8 @@ function Victim:init(x, y, target_x, homeCallback, punchedCallback)
   self:moveTo(x, y)
 
   self:setCollideRect(5, 17, 20, 48)
-  self:setGroups({ 2 })
-  self:setCollidesWithGroups({ 1 })
+  self:setGroups({ TAGS.Victim, TAGS.Ghost })
+  self:setCollidesWithGroups({ TAGS.Player, TAGS.Soundwave })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
   self.flipValue = gfx.kImageUnflipped
@@ -80,7 +80,6 @@ function Victim:initHumanAnimations()
                   loop = false,
                   onAnimationEndEvent = function()
                     self:setImage(victim_imagetable:getImage(20))
-                    self:setCollisionsEnabled(false)
                     pd.timer.new(800, function()
                       self.imagetable = ghost_imagetable
                       self:changeState("ghost_idle_front")
@@ -106,12 +105,19 @@ end
 
 function Victim:die()
   local tag = self:getTag()
-  if tag == TAGS.Body or tag == TAGS.Ghost then
+  if tag == TAGS.Body then
     return
   end
 
-  self:changeState("human_die")
-  self:setTag(TAGS.Body)
+  if tag == TAGS.Victim then
+    self:changeState("human_die")
+    self:setTag(TAGS.Body)
+  elseif tag == TAGS.Ghost then
+    print("ghost die")
+    -- todo:
+    -- self:changeState("ghost_die")
+    self:remove()
+  end
 end
 
 function Victim:attack()

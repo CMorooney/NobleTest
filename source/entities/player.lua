@@ -12,6 +12,8 @@ local scythe
 function Player:init(x, y)
   Player.super.init(self, player_imagetable)
 
+  self:setTag(TAGS.Player)
+
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
 
   self:addState("idle", 1, 9, { tickStep = 4 }, true)
@@ -26,8 +28,8 @@ function Player:init(x, y)
   self.is_attacking= false
 
   self:setCollideRect(10, 0, 20, 42)
-  self:setGroups({ 1 })
-  self:setCollidesWithGroups({ 2 })
+  self:setGroups({ TAGS.Player })
+  self:setCollidesWithGroups({ TAGS.Victim })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 end
 

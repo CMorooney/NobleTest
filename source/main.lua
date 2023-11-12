@@ -7,6 +7,7 @@ import 'entities/Victim'
 import 'entities/Scythe'
 import 'entities/Home'
 import 'entities/healthbar'
+import 'entities/soundwave'
 
 -- Noble.Settings.setup({
 	-- Difficulty = "Medium"
@@ -19,6 +20,9 @@ import 'entities/healthbar'
 Noble.showFPS = true
 
 TAGS = {
+  Player = 1,
+  Scythe = 2,
+  Soundwave= 3,
   Victim = 6,
   Body = 7,
   Ghost = 8
