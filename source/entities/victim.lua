@@ -10,6 +10,8 @@ local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
 function Victim:init(x, y, target_x)
   Victim.super.init(self, victim_imagetable)
 
+  self:setTag(6)
+
   self.target_x = target_x
 
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
