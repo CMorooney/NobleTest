@@ -4,11 +4,20 @@ local gfx <const> = Graphics
 Victim = {}
 class("Victim").extends(AnimatedSprite)
 
-local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
-local ghost_imagetable <const> = gfx.imagetable.new("assets/images/ghost")
+function Victim:init(x,
+                     y,
+                     target_x,
+                     victim_imagetable,
+                     ghost_imagetable,
+                     ghostsplode_imagetable,
+                     homeCallback,
+                     punchedCallback)
 
-function Victim:init(x, y, target_x, homeCallback, punchedCallback)
   Victim.super.init(self, victim_imagetable)
+
+  self.victim_imagetable = victim_imagetable
+  self.ghost_imagetable = ghost_imagetable
+  self.ghostsplode_imagetable = ghostsplode_imagetable
 
   self.homeCallback = homeCallback
   self.punchedCallback = punchedCallback
@@ -41,7 +50,7 @@ function Victim:initHumanAnimations()
      self.punchedCallback()
     end
 
-    self:setImage(victim_imagetable:getImage(1))
+    self:setImage(self.victim_imagetable:getImage(1))
   end
 
   self:addState("human_idle", 1, 1, { tickStep = 4 }, true)
@@ -79,9 +88,9 @@ function Victim:initHumanAnimations()
                   tickStep = 5,
                   loop = false,
                   onAnimationEndEvent = function()
-                    self:setImage(victim_imagetable:getImage(20))
+                    self:setImage(self.victim_imagetable:getImage(20))
                     pd.timer.new(800, function()
-                      self.imagetable = ghost_imagetable
+                      self.imagetable = self.ghost_imagetable
                       self:changeState("ghost_idle_front")
                       self:setTag(TAGS.Ghost)
                       self.target_x = 200
@@ -97,6 +106,12 @@ function Victim:initGhostAnimations()
   self:addState("ghost_idle_back", 1, 3, { tickStep = 4 })
   self:addState("ghost_run_right", 4, 6, { tickStep = 4 })
   self:addState("ghost_run_left", 10, 12, { tickStep = 4 })
+  self:addState("ghostsplode", 1, 74, {
+    loop = false,
+    onAnimationEndEvent = function()
+      self:remove()
+    end
+  })
 end
 
 function Victim:setTarget(x)
@@ -113,10 +128,8 @@ function Victim:die()
     self:changeState("human_die")
     self:setTag(TAGS.Body)
   elseif tag == TAGS.Ghost then
-    print("ghost die")
-    -- todo:
-    -- self:changeState("ghost_die")
-    self:remove()
+    self.imagetable = self.ghostsplode_imagetable
+    self:changeState("ghostsplode")
   end
 end
 

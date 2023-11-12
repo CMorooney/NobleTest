@@ -23,6 +23,10 @@ local soundwave_imagetable <const> = gfx.imagetable.new("assets/images/soundwave
 local soundwaveLeftSprite
 local soundwaveRightSprite
 
+local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
+local ghost_imagetable <const> = gfx.imagetable.new("assets/images/ghost")
+local ghostsplode_imagetable <const> = gfx.imagetable.new("assets/images/ghostsplode")
+
 local playerHealthValue = 1;
 local homeHealthValue = 0;
 
@@ -96,7 +100,14 @@ function JamScene:enter()
   victimSpawnTimer.repeats = true
   victimSpawnTimer.timerEndedCallback = function(_)
     local xpos = math.random(400)
-    local victim = Victim(xpos, 175, player.x, ghostReachedHome, playerWasPunched)
+    local victim = Victim(xpos,
+                          175,
+                          player.x,
+                          victim_imagetable,
+                          ghost_imagetable,
+                          ghostsplode_imagetable,
+                          ghostReachedHome,
+                          playerWasPunched)
     victim:setZIndex(1)
     self:addSprite(victim)
   end
