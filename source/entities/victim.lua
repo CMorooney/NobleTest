@@ -1,3 +1,4 @@
+local pd <const> = playdate
 local gfx <const> = Graphics
 
 Victim = {}
@@ -13,11 +14,38 @@ function Victim:init(x, y, target_x)
 
   self:remove() -- AnimatedSprite adds itself to the scene but we want to manage that through Noble
 
+  local function attackComplete()
+    self:setImage(victim_imagetable:getImage(1))
+  end
+
   self:addState("idle", 1, 1, { tickStep = 4 }, true)
   self:addState("walk", 2, 7, { tickStep = 4 })
-  self:addState("slam", 8, 11, { tickStep = 4, loop = false })
-  self:addState("backhand", 12, 14, { tickStep = 4, loop = false })
-  self:addState("punch", 15, 16, { tickStep = 4, loop = false })
+  self:addState("slam",
+                8,
+                11,
+                {
+                  tickStep = 4,
+                  loop = false,
+                  onAnimationEndEvent = attackComplete
+                })
+  self:addState("backhand",
+                12,
+                14,
+                {
+                  tickStep = 4,
+                  loop = false,
+                  onAnimationEndEvent = attackComplete
+                }
+  )
+  self:addState("punch",
+                15,
+                16,
+                {
+                  tickStep = 4,
+                  loop = false,
+                  onAnimationEndEvent = attackComplete
+                }
+  )
   self:addState("die",
                 17,
                 20,
@@ -27,12 +55,13 @@ function Victim:init(x, y, target_x)
                   onAnimationEndEvent = function()
                     self:setImage(victim_imagetable:getImage(20))
                     self:setCollisionsEnabled(false)
+                    pd.timer.new(300, function()
+                      -- todo: ghost
+                    end)
                   end
                 }
   )
 
-  self.movement_speed = 1
-  self.x_velocity = 0
   self:moveTo(x, y)
 
   self:setCollideRect(7, 17, 17, 48)
@@ -40,8 +69,10 @@ function Victim:init(x, y, target_x)
   self:setCollidesWithGroups({ 1 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
+  self.flipValue = gfx.kImageUnflipped
   self.facing_right = false
   self.is_dead = false
+  self.is_attacking = false
 end
 
 function Victim:setTarget(x)
@@ -53,21 +84,41 @@ function Victim:die()
     return
   end
 
-  print("i'm a victim and i'm dead")
-  self.is_dead = true
   self:changeState("die")
+  self.is_dead = true
+end
+
+function Victim:attack()
+  if self.is_attacking then
+    return
+  end
+
+  local attackIndex = math.random(3)
+
+  if attackIndex == 0 then
+    self:changeState("slam")
+  elseif attackIndex == 1 then
+    self:changeState("backhand")
+  elseif attackIndex == 3 then
+    self:changeState("punch")
+  end
+
+  self.is_attacking = true
+  pd.timer.new(800, function()
+    self.is_attacking = false
+  end)
 end
 
 function Victim:update()
   Victim.super.update(self)
+  self:setImageFlip(self.flipValue)
 
   if self.is_dead then
     return
   end
 
   if math.abs(self.target_x - self.x) < 20 then
-    -- todo: attack
-    self:changeState("idle")
+    self:attack()
     return
   end
 
@@ -84,9 +135,9 @@ function Victim:update()
   end
 
   if self.facing_right then
-    self:setImageFlip(gfx.kImageUnflipped)
+    self.flipValue = gfx.kImageUnflipped
   else
-    self:setImageFlip(gfx.kImageFlippedX)
+    self.flipValue = gfx.kImageFlippedX
   end
 
   self:moveWithCollisions(x, self.y)

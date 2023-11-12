@@ -26,7 +26,7 @@ function Scythe:init(x, y)
   self:moveTo(x, y)
 
   self:setCollideRect(0, 0, 75, 75)
-  self:setGroups({ 1 })
+  self:setGroups({ 3 })
   self:setCollidesWithGroups({ 2 })
   self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
 
@@ -47,7 +47,7 @@ function Scythe:update()
   if numberOfCollisions > 0 then
     local p = collisions[1]
     local other = p.other
-    if self:alphaCollision(other) then
+    if self.facing_right ~= other.facing_right and self:alphaCollision(other) then
       other:die()
     end
   end
