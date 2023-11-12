@@ -149,7 +149,7 @@ function Victim:attack()
 
   self.is_attacking = true
 
-  pd.timer.new(800, function()
+  pd.timer.new(600, function()
     self.is_attacking = false
   end)
 end
@@ -200,7 +200,7 @@ function Victim:update()
     end
   end
 
-  local x = math.lerp(self.x, self.target_x, 0.01)
+  local x = math.lerp(self.x, self.target_x, 0.02)
   local y = self.y
 
   if tag == TAGS.Ghost then
