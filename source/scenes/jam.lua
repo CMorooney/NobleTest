@@ -27,8 +27,15 @@ local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
 local ghost_imagetable <const> = gfx.imagetable.new("assets/images/ghost")
 local ghostsplode_imagetable <const> = gfx.imagetable.new("assets/images/ghostsplode")
 
-local playerHealthValue = 1;
-local homeHealthValue = 0;
+local playerHealthValue = 1
+local homeHealthValue = 0
+
+local currentWave = 1
+local waveVictimsSpawned = 0
+local waveVictimsKilled = 0
+local waveVictimsEscaped = 0
+local totalVictimsKilled = 0
+local totalVictimsEscaped = 0
 
 local victimSpawnTimer = nil
 
@@ -95,11 +102,20 @@ function JamScene:enter()
   local function playerWasPunched()
     self:performPlayerDamage()
   end
+  local function ghostDied()
+    self:handleGhostKill()
+  end
 
   victimSpawnTimer = pdtimer.new(1000)
   victimSpawnTimer.repeats = true
+  victimSpawnTimer.delay = 2000
   victimSpawnTimer.timerEndedCallback = function(_)
-    local xpos = math.random(400)
+    if waveVictimsSpawned >= currentWave then return end
+
+    local xpos = -20
+    local left = math.random(2)
+    if left > 1 then xpos = 420 end
+
     local victim = Victim(xpos,
                           175,
                           player.x,
@@ -107,10 +123,27 @@ function JamScene:enter()
                           ghost_imagetable,
                           ghostsplode_imagetable,
                           ghostReachedHome,
-                          playerWasPunched)
+                          playerWasPunched,
+                          ghostDied)
     victim:setZIndex(1)
     self:addSprite(victim)
+    waveVictimsSpawned = waveVictimsSpawned + 1
   end
+end
+
+function JamScene:waveIsComplete()
+  if waveVictimsKilled + waveVictimsEscaped >= currentWave then
+    return true
+  end
+  return false
+end
+
+function JamScene:nextWave()
+  victimSpawnTimer:pause()
+  currentWave = currentWave + 1
+  waveVictimsKilled = 0
+  waveVictimsSpawned = 0
+  victimSpawnTimer:start()
 end
 
 function JamScene:performHomeDamage()
@@ -120,6 +153,12 @@ function JamScene:performHomeDamage()
     self:gameOver()
   else
     homeHealthSprite:setPercent(homeHealthValue)
+  end
+
+  waveVictimsEscaped = waveVictimsEscaped + 1
+  totalVictimsEscaped = totalVictimsEscaped + 1
+  if self:waveIsComplete() then
+    self:nextWave()
   end
 end
 
@@ -133,11 +172,21 @@ function JamScene:performPlayerDamage()
   end
 end
 
+function JamScene:handleGhostKill()
+  waveVictimsKilled = waveVictimsKilled + 1
+  totalVictimsKilled = totalVictimsKilled + 1
+  if self:waveIsComplete() then
+    self:nextWave()
+  end
+end
+
 function JamScene:gameOver()
   print("game over")
 end
 
 function JamScene:update()
+  gfx.drawText("*WAVE* *" .. currentWave .. "*", 172, 220)
+
   for _, sprite in ipairs(gfx.sprite.getAllSprites()) do
     if sprite:getTag() == TAGS.Victim then
       sprite:setTarget(player.x)

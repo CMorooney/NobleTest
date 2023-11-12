@@ -11,7 +11,8 @@ function Victim:init(x,
                      ghost_imagetable,
                      ghostsplode_imagetable,
                      homeCallback,
-                     punchedCallback)
+                     punchedCallback,
+                     ghostDeathCallback)
 
   Victim.super.init(self, victim_imagetable)
 
@@ -21,6 +22,7 @@ function Victim:init(x,
 
   self.homeCallback = homeCallback
   self.punchedCallback = punchedCallback
+  self.ghostDeathCallback = ghostDeathCallback
 
   self:setTag(TAGS.Victim)
 
@@ -41,6 +43,7 @@ function Victim:init(x,
   self.flipValue = gfx.kImageUnflipped
   self.facing_right = false
   self.is_attacking = false
+  self.dying = false
 end
 
 function Victim:initHumanAnimations()
@@ -106,12 +109,7 @@ function Victim:initGhostAnimations()
   self:addState("ghost_idle_back", 1, 3, { tickStep = 4 })
   self:addState("ghost_run_right", 4, 6, { tickStep = 4 })
   self:addState("ghost_run_left", 10, 12, { tickStep = 4 })
-  self:addState("ghostsplode", 1, 74, {
-    loop = false,
-    onAnimationEndEvent = function()
-      self:remove()
-    end
-  })
+  self:addState("ghostsplode", 1, 74)
 end
 
 function Victim:setTarget(x)
@@ -128,6 +126,7 @@ function Victim:die()
     self:changeState("human_die")
     self:setTag(TAGS.Body)
   elseif tag == TAGS.Ghost then
+    self.dying = true
     self.imagetable = self.ghostsplode_imagetable
     self:changeState("ghostsplode")
   end
@@ -194,7 +193,11 @@ function Victim:update()
     return
   elseif tag == TAGS.Ghost and self:atHome() then
     self:remove()
-    self.homeCallback()
+    if self.dying then
+      self:ghostDeathCallback()
+    else
+      self.homeCallback()
+    end
   end
 
   local x = math.lerp(self.x, self.target_x, 0.01)
