@@ -12,16 +12,6 @@ import 'entities/Home'
 import 'entities/healthbar'
 import 'entities/soundwave'
 
--- Noble.Settings.setup({
-	-- Difficulty = "Medium"
--- })
-
--- Noble.GameData.setup({
-	-- Score = 0
--- })
-
-Noble.showFPS = true
-
 TAGS = {
   Player = 1,
   Scythe = 2,
