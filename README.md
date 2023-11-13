@@ -9,7 +9,7 @@ Sounds made on eurorack gear.
   - MV Platformer Male: https://opengameart.org/content/mv-platformer-male-32x64
 
 
-*assets were modified to fit playdate color limitiations
+*assets were modified to fit playdate color limitations
 
 ## Tools & Libraries used
   - [playdate sdk](https://sdk.play.date/)
