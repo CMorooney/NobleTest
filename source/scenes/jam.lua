@@ -53,6 +53,16 @@ function JamScene:init()
   JamScene.super.init(self)
   self.background = gfx.image.new("assets/images/background")
 
+  gameOver = false
+  playerHealthValue = 1
+  homeHealthValue = 0
+  currentWave = 1
+  waveVictimsSpawned = 0
+  waveVictimsKilled = 0
+  waveVictimsEscaped = 0
+  totalVictimsKilled = 0
+  totalVictimsEscaped = 0
+
   player = Player(200, 185)
   home = Home()
   playerHealthSprite = HealthBar(25, 222, playerHealthValue)
