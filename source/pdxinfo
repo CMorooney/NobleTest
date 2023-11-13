@@ -1,7 +1,7 @@
-name=A Noble Engine Game
-author=A Lovely Developer
-description=This is a Noble Engine game.
-bundleID=com.yourdomain.GameName
+name=Scythe Shepard
+author=Calvin
+description=wrangle the bodies, then the souls
+bundleID=pizza.calvins.scytheshepard
 version=0.0.1
 buildNumber=1
 imagePath=assets/launcher/
