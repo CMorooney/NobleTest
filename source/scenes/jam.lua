@@ -30,6 +30,9 @@ local ghostsplode_imagetable <const> = gfx.imagetable.new("assets/images/ghostsp
 
 local punch_sample <const> = sound.sample.new("assets/audio/one_shots/punch-001")
 local soundwave_sample <const> = sound.sample.new("assets/audio/one_shots/soundwave-001")
+local gameover_sample <const> = sound.sample.new("assets/audio/one_shots/gameover")
+local homedamage_sample <const> = sound.sample.new("assets/audio/one_shots/homedamage")
+local nextwave_sample <const> = sound.sample.new("assets/audio/one_shots/gamestart")
 
 local playerHealthValue = 1
 local homeHealthValue = 0
@@ -152,6 +155,7 @@ function JamScene:waveIsComplete()
 end
 
 function JamScene:nextWave()
+  nextwave_sample:play()
   victimSpawnTimer:pause()
   currentWave = currentWave + 1
   waveVictimsKilled = 0
@@ -160,7 +164,7 @@ function JamScene:nextWave()
 end
 
 function JamScene:performHomeDamage()
-  -- todo: sound!
+  homedamage_sample:play()
   homeHealthValue = homeHealthValue + 0.3
   if homeHealthValue >= 1 then
     homeHealthSprite:setPercent(1)
@@ -198,6 +202,7 @@ function JamScene:handleGhostKill()
 end
 
 function JamScene:gameOver()
+  gameover_sample:play()
   gameOver = true
   victimSpawnTimer:pause()
   victimSpawnTimer:remove()

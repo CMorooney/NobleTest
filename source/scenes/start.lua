@@ -1,10 +1,13 @@
 local pd <const> = playdate
 local gfx <const> = Graphics
+local sound <const> = playdate.sound
 
 StartScene = {}
 class("StartScene").extends(NobleScene)
 
 local selectedIndex = 0
+local selection_change_sample <const> = sound.sample.new("assets/audio/one_shots/menuselect")
+local option_selected_sample <const> = sound.sample.new("assets/audio/one_shots/gamestart")
 
 function StartScene:init()
   StartScene.super.init(self)
@@ -34,11 +37,13 @@ function StartScene:drawBackground()
 end
 
 local toggleOption = function ()
+  selection_change_sample:play()
   if selectedIndex == 0 then selectedIndex = 1
   else selectedIndex = 0 end
 end
 
 local selectOption = function()
+  option_selected_sample:play()
   if selectedIndex == 0 then
     Noble.transition(JamScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
   else

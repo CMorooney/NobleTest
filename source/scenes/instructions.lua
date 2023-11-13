@@ -1,5 +1,8 @@
 local pd <const> = playdate
 local gfx <const> = Graphics
+local sound <const> = playdate.sound
+
+local option_selected_sample <const> = sound.sample.new("assets/audio/one_shots/gamestart")
 
 InstructionsScene = {}
 class("InstructionsScene").extends(NobleScene)
@@ -15,7 +18,8 @@ function InstructionsScene:drawBackground()
 end
 
 local goBack = function()
-    Noble.transition(StartScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
+  option_selected_sample:play()
+  Noble.transition(StartScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
 end
 
 InstructionsScene.inputHandler = {
