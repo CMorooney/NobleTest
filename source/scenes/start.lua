@@ -17,14 +17,14 @@ function StartScene:update()
   gfx.setImageDrawMode(pd.graphics.kDrawModeFillWhite)
 
   local startText = "start"
-  local settingsText = "settings"
+  local instructionsText = "instructions"
   if selectedIndex == 0 then
     startText = "*"..startText.."*"
   else
-    settingsText = "*"..settingsText.."*"
+    instructionsText = "*"..instructionsText.."*"
   end
-  gfx.drawText(startText, 155, 190)
-  gfx.drawText(settingsText, 205, 190)
+  gfx.drawText(startText, 155, 150)
+  gfx.drawText(instructionsText, 155, 167)
   gfx.setImageDrawMode(pd.graphics.kDrawModeCopy)
 end
 
@@ -42,14 +42,13 @@ local selectOption = function()
   if selectedIndex == 0 then
     Noble.transition(JamScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
   else
-    -- todo:
-    -- Noble.transition(SettingsScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
+    Noble.transition(InstructionsScene, 2, Noble.Transition.DipToBlack, {}, { alwaysRedraw = false })
   end
 end
 
 StartScene.inputHandler = {
-  leftButtonUp = function() toggleOption() end,
-  rightButtonUp = function() toggleOption() end,
+  upButtonUp = function() toggleOption() end,
+  downButtonUp = function() toggleOption() end,
   AButtonUp = function() selectOption() end
 }
 
