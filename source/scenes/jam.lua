@@ -169,6 +169,8 @@ function JamScene:performHomeDamage()
     homeHealthSprite:setPercent(homeHealthValue)
   end
 
+  home:shake(300, 4)
+
   waveVictimsEscaped = waveVictimsEscaped + 1
   totalVictimsEscaped = totalVictimsEscaped + 1
   if self:waveIsComplete() then
