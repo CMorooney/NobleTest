@@ -23,8 +23,8 @@ function GameOverScene:update()
   else
     againText = "*"..againText.."*"
   end
-  gfx.drawText(exitText, 155, 190)
-  gfx.drawText(againText, 205, 190)
+  gfx.drawText(exitText, 55, 140)
+  gfx.drawText(againText, 55, 157)
   gfx.setImageDrawMode(pd.graphics.kDrawModeCopy)
 end
 
