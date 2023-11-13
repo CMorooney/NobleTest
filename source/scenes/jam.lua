@@ -1,5 +1,6 @@
 local gfx <const> = Graphics
 local pdtimer <const> = playdate.timer
+local sound <const> = playdate.sound
 
 JamScene = {}
 class("JamScene").extends(NobleScene)
@@ -26,6 +27,9 @@ local soundwaveRightSprite
 local victim_imagetable <const> = gfx.imagetable.new("assets/images/victim")
 local ghost_imagetable <const> = gfx.imagetable.new("assets/images/ghost")
 local ghostsplode_imagetable <const> = gfx.imagetable.new("assets/images/ghostsplode")
+
+local punch_sample <const> = sound.sample.new("assets/audio/one_shots/punch-001")
+local soundwave_sample <const> = sound.sample.new("assets/audio/one_shots/soundwave-001")
 
 local playerHealthValue = 1
 local homeHealthValue = 0
@@ -156,6 +160,7 @@ function JamScene:nextWave()
 end
 
 function JamScene:performHomeDamage()
+  -- todo: sound!
   homeHealthValue = homeHealthValue + 0.3
   if homeHealthValue >= 1 then
     homeHealthSprite:setPercent(1)
@@ -172,6 +177,7 @@ function JamScene:performHomeDamage()
 end
 
 function JamScene:performPlayerDamage()
+  punch_sample:play()
   playerHealthValue = playerHealthValue - 0.1
   if playerHealthValue <= 0 then
     playerHealthSprite:setPercent(0)
@@ -230,6 +236,7 @@ JamScene.inputHandler = {
   end,
 
   AButtonUp = function()
+    soundwave_sample:play()
     soundwaveLeftSprite:attack()
     soundwaveRightSprite:attack()
   end

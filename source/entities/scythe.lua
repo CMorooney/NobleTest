@@ -1,10 +1,13 @@
 local pd <const> = playdate
 local gfx <const> = Graphics
+local sound <const> = playdate.sound
 
 Scythe = {}
 class("Scythe").extends(AnimatedSprite)
 
 local scythe_imagetable <const> = gfx.imagetable.new("assets/images/scythe")
+local scythe_hit_sample <const> = sound.sample.new("assets/audio/one_shots/scythe-hit-001")
+local scythe_miss_sample <const> = sound.sample.new("assets/audio/one_shots/scythe-miss-001")
 
 function Scythe:init(x, y)
   Scythe.super.init(self, scythe_imagetable)
@@ -54,7 +57,9 @@ function Scythe:update()
       local tag = other:getTag()
       if tag == TAGS.Victim and
          self.facing_right ~= other.facing_right and
-         self:alphaCollision(other) then
+         self:alphaCollision(other)
+      then
+        scythe_hit_sample:play()
         other:die()
       end
     end
@@ -66,6 +71,7 @@ function Scythe:attack()
     return
   end
 
+  scythe_miss_sample:play()
   self.is_attacking = true
   self:setVisible(true)
   self:playAnimation()

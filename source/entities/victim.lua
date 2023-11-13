@@ -1,8 +1,11 @@
 local pd <const> = playdate
 local gfx <const> = Graphics
+local sound <const> = playdate.sound
 
 Victim = {}
 class("Victim").extends(AnimatedSprite)
+
+local ghostsplode_sample <const> = sound.sample.new("assets/audio/one_shots/ghostsplode")
 
 function Victim:init(x,
                      y,
@@ -118,7 +121,7 @@ end
 
 function Victim:die()
   local tag = self:getTag()
-  if tag == TAGS.Body then
+  if tag == TAGS.Body or self.dying then
     return
   end
 
@@ -127,6 +130,7 @@ function Victim:die()
     self:setTag(TAGS.Body)
   elseif tag == TAGS.Ghost then
     self.dying = true
+    ghostsplode_sample:play()
     self.imagetable = self.ghostsplode_imagetable
     self:changeState("ghostsplode")
   end
