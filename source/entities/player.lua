@@ -73,8 +73,11 @@ function Player:update()
     self:setImageFlip(gfx.kImageFlippedX)
   end
 
-  self:moveWithCollisions(self.x + self.x_velocity, self.y)
-  self:updateScythe()
+  local newPos = self.x + self.x_velocity
+  if newPos > 0 and newPos < 400 then
+    self:moveWithCollisions(self.x + self.x_velocity, self.y)
+    self:updateScythe()
+  end
 end
 
 function Player:updateScythe()
